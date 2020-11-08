@@ -14,6 +14,7 @@ struct node{
   node* next; 
 };
 void add(int index, node** &table, student* newstudent);
+void print(node** table, int n); 
 int main(){
   cout << "student list (again) (again). Commands: print, add, delete, quit" << endl;
 
@@ -26,7 +27,7 @@ int main(){
     cout << "input a command: " << endl;
     cin >> in;
     if(strcmp(in,"print") == 0){
-      //print
+      print(table, n);
     }
     else if(strcmp(in, "add") == 0){
       student* newstudent = new student();
@@ -53,6 +54,17 @@ int main(){
   return 0; 
 }
 void add(int index, node** &table, student* newstudent){
-  //add
+  node* newnode= new node();
+  newnode->std = newstudent;
+  table[index] = newnode; 
+}
+void print(node** table, int n){
+  for(int i = 0; i < n; i++){
+    if(table[i] != NULL){
+      cout << table[i]->std->firstname << " " << table[i]->std->lastname << endl;
+      cout << "id: " << table[i]->std->id << endl;
+      cout << "gpa: " << table[i]->std->gpa << endl;  
+    }
+  }
 }
 
