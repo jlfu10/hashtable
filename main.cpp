@@ -1,25 +1,25 @@
 #include <iostream>
 #include <cstring>
 
-//TO DO:
-//implement hash table
-//add to hash table
-//print from hash table
-//delete from hash table
-//make and get (random) from file
-//comments
 using namespace std;
-//void add()
-//void delete()
-//void print()
+
 struct student{
   char firstname[20];
   char lastname[20]; 
   int id;
   float gpa; 
 };
+struct node{
+  student* std;
+  node* next; 
+};
+void add(int index, node** &table, student* newstudent);
 int main(){
   cout << "student list (again) (again). Commands: print, add, delete, quit" << endl;
+
+  int n = 100; 
+  node** table = new node*[n]; 
+  
   char in[80]; 
   //until the user quits, keep on running
   while(true){
@@ -29,7 +29,16 @@ int main(){
       //print
     }
     else if(strcmp(in, "add") == 0){
-      //add
+      student* newstudent = new student();
+      cout << "first name: " << endl;
+      cin >> newstudent->firstname;
+      cout << "last name: " << endl;
+      cin >> newstudent->lastname;
+      cout << "id: " << endl;
+      cin >> newstudent->id;
+      cout << "gpa: " << endl;
+      cin >> newstudent->gpa;
+      add(newstudent->id%n, table, newstudent); 
     }
     else if(strcmp(in, "delete") == 0){
       //delete
@@ -43,3 +52,7 @@ int main(){
   }
   return 0; 
 }
+void add(int index, node** &table, student* newstudent){
+  //add
+}
+
