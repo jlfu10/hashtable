@@ -1,7 +1,17 @@
 #include <iostream>
 #include <cstring>
+#include <iomanip>
+#include <fstream>
+#include <stdlib.h>
+#include <time.h>
+#include <string>
 
 using namespace std;
+//to do:
+//text document with students, random or manual add
+//fix rehashing
+//
+//comments
 
 struct student{
   char firstname[20];
@@ -26,8 +36,14 @@ int main(){
   for(int i = 0; i < n; i++){
     table[i] = NULL; 
   }
-  
-  char in[80]; 
+  ifstream file;
+  file.open("students.txt");
+  int line = 0;
+  int count = 0; 
+  char in[80];
+  char fname[20];
+  char lname[20];
+  srand(time(NULL));
   //until the user quits, keep on running
   while(true){
     cout << "input a command: " << endl;
@@ -36,16 +52,43 @@ int main(){
       print(table, n);
     }
     else if(strcmp(in, "add") == 0){
-      student* newstudent = new student();
-      cout << "first name: " << endl;
-      cin >> newstudent->firstname;
-      cout << "last name: " << endl;
-      cin >> newstudent->lastname;
-      cout << "id: " << endl;
-      cin >> newstudent->id;
-      cout << "gpa: " << endl;
-      cin >> newstudent->gpa;
-      table = add(newstudent->id%n, table, newstudent, n); 
+      cout << "random student (r) or manual input (m)?" << endl;
+      cin >> in;
+      if(strcmp(in, "r")==0){
+	student* newstudent = new student();
+	int line = rand()%5; //students
+	for(int i = 0; i < 10; i++){ //students times 2
+	  if(i == (line*2)-2){
+	    file >> fname; 
+	  }
+	  else if(i == (line*2)-1){
+	    file >> lname; 
+	  }
+	  else{
+	    file >> in;
+	  }
+	}
+	file.close();
+	file.open("students.txt");
+	strcpy(newstudent->firstname, fname);
+	strcpy(newstudent->lastname, lname);
+	newstudent->id = rand()%n;
+	newstudent->gpa = (rand()%400)/100;
+	table = add(newstudent->id%n, table, newstudent, n);
+	cout << newstudent->firstname  << " added" << endl;
+      }
+      else if(strcmp(in, "m")==0){
+	student* newstudent = new student();
+	cout << "first name: " << endl;
+	cin >> newstudent->firstname;
+	cout << "last name: " << endl;
+	cin >> newstudent->lastname;
+	cout << "id: " << endl;
+	cin >> newstudent->id;
+	cout << "gpa: " << endl;
+	cin >> newstudent->gpa;
+	table = add(newstudent->id%n, table, newstudent, n);
+      }
     }
     else if(strcmp(in, "delete") == 0){
       //delete
@@ -71,7 +114,7 @@ node** add(int index, node** &table, student* newstudent, int&n){
     }
     current->next = newnode;
     if(count == 3){ 
-      n += 100;
+      n = n*2;
       node** newtable = new node*[n]; 
       for(int i = 0; i < (n-100); i++){
 	if(table[i] != NULL){
