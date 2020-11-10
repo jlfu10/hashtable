@@ -116,22 +116,41 @@ node** add(int index, node** &table, student* newstudent, int&n){
   node* current = table[index];
   int count = 1; 
   if(current != NULL){
+    //loop through the linked list until we see the last node in the list
+    //then, we set that node's next node to the new node
     while(current->next != NULL){
       current = current->next;
-      count++; 
+      count++; //for how many nodes are in the list
     }
     current->next = newnode;
-    if(count == 3){
-      //rehash
-      n = n*2;
-      node** newtable = new node*[n]; 
-      for(int i = 0; i < (n-100); i++){
-	if(table[i] != NULL){
-	  node* current = table[i];
-	  while(current != NULL){
-	    newtable[current->std->id%n] = current;
-	    current = current->next;
-
+    if(count == 3){ //if we see that there are three nodes in the list, rehash
+      n *= 2;
+      node** newtable = new node*[n];
+      for(int i = 0; i < n; i++){
+	newtable[i] = NULL;
+      }
+      //make the new table
+      for(int i = 0; i < n/2; i++){ //loop through original
+	if(table[i] != NULL){ //if there's something there in the original
+	  node* current = table[i]; //the current node (for looping in original linked list)
+	  node* newcurrent; //current node for newtable
+	  while(current != NULL){ //loop through the linked list
+	    if(newtable[current->std->id%n] == NULL){
+	      node* placeholder = new node();
+	      placeholder->std = current->std; 
+	      newtable[current->std->id%n] = placeholder; //if there is nothing in the original
+	    }
+	    else{
+	      newcurrent = newtable[current->std->id%n]; 
+	      while(newcurrent != NULL){
+		newcurrent = newcurrent->next; //we loop through the new linked list 
+	      }//until we get to where the next is empyy 
+	      node* placeholder = new node();
+	      placeholder->std = current->std; 
+	      newcurrent = placeholder; //set next to the current
+	      
+	    }
+	    current = current->next; //continue looping
 	  }
 	}
       }
@@ -139,7 +158,7 @@ node** add(int index, node** &table, student* newstudent, int&n){
     }
   }
   else{
-    table[index] = newnode;
+    table[index] = newnode; //if this is the first instance, set the index to the node
   }
   return table; 
 }
