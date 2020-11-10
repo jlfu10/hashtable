@@ -8,9 +8,8 @@
 
 using namespace std;
 //to do:
-//text document with students, random or manual add
 //fix rehashing
-//
+//delete function
 //comments
 
 struct student{
@@ -26,7 +25,7 @@ struct node{
 
 node** add(int index, node** &table, student* newstudent, int &n);
 void print(node** table, int n); 
-void remove(node** &table, int id);
+void remove(node** &table, int id, int n);
 
 int main(){
   cout << "student list (again) (again). Commands: print, add, delete, quit" << endl;
@@ -39,7 +38,8 @@ int main(){
   ifstream file;
   file.open("students.txt");
   int line = 0;
-  int count = 0; 
+  int count = 0;
+  int id; 
   char in[80];
   char fname[20];
   char lname[20];
@@ -56,8 +56,8 @@ int main(){
       cin >> in;
       if(strcmp(in, "r")==0){
 	student* newstudent = new student();
-	int line = rand()%5; //students
-	for(int i = 0; i < 10; i++){ //students times 2
+	int line = rand()%12; //students
+	for(int i = 0; i < 24; i++){ //students times 2
 	  if(i == (line*2)-2){
 	    file >> fname; 
 	  }
@@ -73,7 +73,7 @@ int main(){
 	strcpy(newstudent->firstname, fname);
 	strcpy(newstudent->lastname, lname);
 	newstudent->id = rand()%n;
-	newstudent->gpa = (rand()%400)/100;
+	newstudent->gpa = (float)(rand()%400)/(float)(100);
 	table = add(newstudent->id%n, table, newstudent, n);
 	cout << newstudent->firstname  << " added" << endl;
       }
@@ -91,7 +91,9 @@ int main(){
       }
     }
     else if(strcmp(in, "delete") == 0){
-      //delete
+      cout << "id to delete: " << endl;
+      cin >> id;
+      remove(table, id, n); 
     }
     else if(strcmp(in, "quit") == 0){
       return 0;
@@ -149,6 +151,26 @@ void print(node** table, int n){
     }
   }
 }
-void remove(node** table, int id){
-  cout << "remove it remove it!" << endl;
+void remove(node** & table, int id, int n){
+  node* current = table[id%n];
+  while(current != NULL){
+    if(current->std->id == id){
+      if(current->next == NULL){
+	cout << current->std->firstname << " deleted" << endl;
+	delete current->std; 
+	delete current;
+	table[id%n] = NULL;
+	return; 
+      }
+      else{
+	cout << current->std->firstname << " deleted" << endl;
+	table[id%n] = current->next;
+	delete current->std; 
+	delete current;
+	return; 
+      }
+    }
+    current = current->next;
+  }
+  return;
 }
