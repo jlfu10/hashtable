@@ -116,8 +116,7 @@ node** add(int index, node** &table, student* newstudent, int&n){
   node* newnode= new node();
   newnode->std = newstudent;
   node* current = table[index];
-  int count = 1; 
-  if(current != NULL){
+  int count
     //loop through the linked list until we see the last node in the list
     //then, we set that node's next node to the new node
     while(current->next != NULL){
