@@ -38,6 +38,7 @@ int main(){
   file.open("students.txt"); //open the text file with students
   int line = 0; //which line to read on random
   int id; //for which id to delete
+  int increment = 0; 
   char in[80]; //for inputs in loops
   char fname[20]; //firstname of random student
   char lname[20]; //lastname of random student
@@ -55,33 +56,38 @@ int main(){
       cout << "random student (r) or manual input (m)?" << endl;
       cin >> in;
       if(strcmp(in, "r")==0){
-	//random student
-	student* newstudent = new student();
-	//random line from text file
-	int line = rand()%12;
-	//loop until we see the lines that have our first and last name
-	for(int i = 0; i < 24; i++){ 
-	  if(i == (line*2)-2){
-	    file >> fname; 
+	cout << "how many students would you like to add?" << endl;
+	cin >> id;
+	for(int a = 0; a < id; a++){
+	  //random student
+	  student* newstudent = new student();
+	  //random line from text file
+	  int line = rand()%12;
+	  //loop until we see the lines that have our first and last name
+	  for(int i = 0; i < 24; i++){
+	    if(i == (line*2)-2){
+	      file >> fname; 
+	    }
+	    else if(i == (line*2)-1){
+	     file >> lname; 
+	    }
+	    else{
+	      //otherwise, scan the next line so that we can keep on looping
+	      file >> in;
+	    }
 	  }
-	  else if(i == (line*2)-1){
-	    file >> lname; 
-	  }
-	  else{
-	    //otherwise, scan the next line so that we can keep on looping
-	    file >> in;
-	  }
+	  //reopen file
+	  file.close();
+	  file.open("students.txt");
+	  //make the newstudent's attributes and add it to the table
+	  strcpy(newstudent->firstname, fname);
+	  strcpy(newstudent->lastname, lname);
+	  newstudent->id = increment;
+	  increment++;
+	  newstudent->gpa = (float)(rand()%400)/(float)(100);
+	  table = add(newstudent->id%n, table, newstudent, n);
+	  cout << newstudent->firstname  << " added" << endl;
 	}
-	//reopen file
-	file.close();
-	file.open("students.txt");
-	//make the newstudent's attributes and add it to the table
-	strcpy(newstudent->firstname, fname);
-	strcpy(newstudent->lastname, lname);
-	newstudent->id = rand()%n;
-	newstudent->gpa = (float)(rand()%400)/(float)(100);
-	table = add(newstudent->id%n, table, newstudent, n);
-	cout << newstudent->firstname  << " added" << endl;
       }
       else if(strcmp(in, "m")==0){
 	//manual student, get inputs for student, add
@@ -159,6 +165,7 @@ node** add(int index, node** &table, student* newstudent, int&n){
 	}
       }
       //if we rehashed, return the new table
+      cout << "rehashed" << endl;
       return newtable;
     }
   }
