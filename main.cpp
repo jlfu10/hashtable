@@ -34,9 +34,12 @@ int main(){
   for(int i = 0; i < n; i++){
     table[i] = NULL; //set all to values to NULL 
   }
-  ifstream file;
-  file.open("students.txt"); //open the text file with students
-  int line = 0; //which line to read on random
+  ifstream first;
+  first.open("firstname.txt"); //open the text file with students
+  ifstream last;
+  last.open("lastname.txt"); 
+  int f = 0; //which line (first/last) to read on random
+  int l = 0; 
   int id; //for which id to delete
   int increment = 0; 
   char in[80]; //for inputs in loops
@@ -62,23 +65,29 @@ int main(){
 	  //random student
 	  student* newstudent = new student();
 	  //random line from text file
-	  int line = rand()%12;
+	  int f = rand()%12;
+	  int l = rand()%12; 
 	  //loop until we see the lines that have our first and last name
-	  for(int i = 0; i < 24; i++){
-	    if(i == (line*2)-2){
-	      file >> fname; 
+	  for(int i = 0; i < 12; i++){
+	    if(i == f){
+	      first >> fname; 
 	    }
-	    else if(i == (line*2)-1){
-	     file >> lname; 
+	    else{
+	      first >> in; 
+	    }
+	    if(i == l){
+	     last >> lname; 
 	    }
 	    else{
 	      //otherwise, scan the next line so that we can keep on looping
-	      file >> in;
+	      last >> in;
 	    }
 	  }
 	  //reopen file
-	  file.close();
-	  file.open("students.txt");
+	  first.close();
+	  first.open("firstname.txt");
+	  last.close();
+	  last.open("lastname.txt"); 
 	  //make the newstudent's attributes and add it to the table
 	  strcpy(newstudent->firstname, fname);
 	  strcpy(newstudent->lastname, lname);
